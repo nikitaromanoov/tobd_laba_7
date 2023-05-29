@@ -1,6 +1,0 @@
-source .venv/bin/activate
-
-
-git add .
-git commit -m "Update README.md 2"
-git push -u origin master
