@@ -5,16 +5,10 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 import psutil
 
-
-
-
 import configparser
 
 config = configparser.ConfigParser()
 config.read("config.ini")
-
-
-
 
 class model_KMean():
     def __init__(self, config):
