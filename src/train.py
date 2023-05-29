@@ -2,7 +2,6 @@ from pyspark.ml.clustering import KMeans
 from pyspark.ml.evaluation import ClusteringEvaluator
 from pyspark.ml.feature import VectorAssembler, MinMaxScaler
 from pyspark.sql import SparkSession
-#from pyspark.sql.functions import isnull, when, count, col, lit
 from pyspark.sql.functions import col
 import psutil
 
