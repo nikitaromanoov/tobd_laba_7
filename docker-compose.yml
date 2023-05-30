@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+   kmeans:
+       container_name: kmeans_with_spark
+       build:
+           context: .
+           dockerfile: Dockerfile
+       command: bash -c "python src/train.py"
+       image: nikitaromanoov/kmeans_with_spark:latest
+       ports:
+           - "4041:4041"
+           - "8887:8887"
+       depends_on:
+               - redis
+               - add_data
+               
+   redis:
+       container_name: redis
+       build:
+           context: .
+           dockerfile: Dockerfile_redis
+       command: bash -c "redis-server"
+       image: nikitaromanoov/kmeans_redis:latest
+       ports:
+           - "6379:6379"
+           
+   add_data:
+       container_name: add_data
+       build:
+           context: .
+           dockerfile: Dockerfile_add_data
+       command: bash -c "python add_data.py"
+       image: nikitaromanoov/add_data:latest
+       ports:
+           - "7000:7000"
+
