@@ -23,3 +23,13 @@ https://github.com/nikitaromanoov/tobd_laba_6/blob/d26d66369cbd2d3dd7df3796a6ab8
 5. Рекомендуется использование docker контейнеров.
 
 https://github.com/nikitaromanoov/tobd_laba_6/blob/main/docker-compose.yml
+
+
+Результат:
+
+![image](https://github.com/nikitaromanoov/tobd_laba_6/assets/91135334/5422c8fe-a9ed-4b96-8bfc-04b647a6b3e4)
+
+
+![image](https://github.com/nikitaromanoov/tobd_laba_6/assets/91135334/5381431c-c8aa-4dc7-9e95-a27f331b589a)
+
+![image](https://github.com/nikitaromanoov/tobd_laba_6/assets/91135334/985d838b-ea54-4786-81e5-4cd3d5eb90ab)
