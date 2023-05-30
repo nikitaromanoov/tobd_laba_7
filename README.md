@@ -1,22 +1,25 @@
-# Лабораторная работа №5
+# Лабораторная работа №6
 ## Цель работы
-Получить навыки разработки и настройки Spark приложения.
+Получить навыки выгрузки исходных данных и отправки результатов модели с использованием различных источников данных согласно варианту задания.
 
 ## Ход работы
 
-1. Настроить среду для Spark вычислений: https://sparkbyexamples.com/pyspark/how-to-install-and-run-pyspark-on-windows/
+1. Обеспечить выгрузку данных при каждом запуске модели.
 
-<img width="598" alt="2" src="https://github.com/nikitaromanoov/tobd_laba_5/assets/91135334/5b09a4dc-d8cf-491a-a045-1d0e4d150816">
+https://github.com/nikitaromanoov/tobd_laba_6/blob/d26d66369cbd2d3dd7df3796a6ab82bb5733c6af/src/train.py#L34
 
+2. Обеспечить загрузку данных сразу по завершении работы модели.
 
-2.Обязательно проверить работоспособность компонентов Spark платформы, запустив примеры (WordCount).
+https://github.com/nikitaromanoov/tobd_laba_6/blob/d26d66369cbd2d3dd7df3796a6ab82bb5733c6af/src/train.py#L64
 
-https://github.com/nikitaromanoov/tobd_laba_5/blob/main/example_wordcount.ipynb
+3. Необходимо разработать протокол взаимодействия между моделью и источником данных.
 
-3. Разработать на PySpark модель кластеризации на базе алгоритма к- средних. Разрешено использование любых метрик и подходов машинного обучения.
+https://github.com/nikitaromanoov/tobd_laba_6/blob/d26d66369cbd2d3dd7df3796a6ab82bb5733c6af/src/train.py#L14
 
-https://github.com/nikitaromanoov/tobd_laba_5/blob/main/src/train.py
+4. Необходимо разработать формат хранения данных исходя из особенностей источника данных.
 
-4. Можно использовать все доступные средства языка Python/Scala. Обязательно провести предобработку данных с целью формирования выборки адекватного размера в зависимости от системных ресурсов.
+Формат - файл csv
 
-https://github.com/nikitaromanoov/tobd_laba_5/blob/06b568f7f0f2ca5ba91a59350ada12f18036d9bd/src/train.py#L24
+5. Рекомендуется использование docker контейнеров.
+
+https://github.com/nikitaromanoov/tobd_laba_6/blob/main/docker-compose.yml
