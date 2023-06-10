@@ -28,7 +28,13 @@ config.read("config.ini")
 
 class model_KMean():
     def __init__(self, config):
-        self.spark = SparkSession.builder.appName("test").getOrCreate()
+        self.spark = SparkSession.builder.appName("test") \
+        .config("spark.executor.instances", "2") \
+        .config("spark.executor.memory", "2g") \
+        .config("spark.executor.cores", "4") \
+        .config("spark.driver.memory", "4g") \
+        .config("spark.driver.cores", "4") \
+        .getOrCreate()
         self.model = KMeans().setK(int(config["parameters"]["k_p"])).setSeed(int(config["parameters"]["seed"]))
     def preprocess(self):
         file = redis_f("Table_for_segmentation", None, p_set=False)
