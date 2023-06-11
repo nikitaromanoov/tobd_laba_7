@@ -5,7 +5,7 @@ services:
        build:
            context: .
            dockerfile: Dockerfile
-       command: bash -c "python src/train.py"
+       command: bash -c "python src/train.py && ls /app/showcase"
        image: nikitaromanoov/kmeans_with_spark:latest
        ports:
            - "4041:4041"
@@ -13,6 +13,9 @@ services:
        depends_on:
                - redis
                - add_data
+               - vitrina
+       volumes:
+           - app-volume:/app/showcase
                
    redis:
        container_name: redis
@@ -34,3 +37,27 @@ services:
        ports:
            - "7000:7000"
 
+   vitrina:
+       container_name: vitrina
+       build:
+           context: .
+           dockerfile: Dockerfile_scala
+       command: "sbt run"
+       image: nikitaromanoov/vitrina:latest
+       volumes:
+           - app-volume:/app/showcase
+
+   py_vitrina:
+       container_name: py_vitrina
+       build:
+           context: .
+           dockerfile: Dockerfile_vitrina
+       command: "python server.py"
+       image: nikitaromanoov/py_vitrina:latest
+       ports:
+           - "8103:8103"
+       volumes:
+           - app-volume:/app/showcase
+       
+volumes:
+    app-volume:

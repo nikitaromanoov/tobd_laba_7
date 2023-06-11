@@ -11,15 +11,24 @@ import configparser
 import redis
 import pandas as pd
 
-def redis_f(name, value, p_get=True, p_set=True):
-        r = redis.Redis(host="redis",
-                        port=6379,
-                        decode_responses=True)
-        if p_set:
-            r.set(name, value)
-        if p_get:
-            return r.get(name)
+import json
 
+from websocket import create_connection 
+
+
+def ws_vitrina(task, name, value=None):
+        uri = "ws://{}:{}".format("py_vitrina", 8103) 
+        ws = create_connection(uri)
+        if task== "get":
+            data = {'task': task, 'name': name}
+        else:
+            data = {'task': task, 'name': name, "value" : value}
+        ws.send(json.dumps(data))
+        responce = json.loads(ws.recv())
+        ws.close()
+        print(responce.keys())
+        return responce
+            
 
     
 
@@ -36,38 +45,33 @@ class model_KMean():
         .config("spark.driver.cores", "4") \
         .getOrCreate()
         self.model = KMeans().setK(int(config["parameters"]["k_p"])).setSeed(int(config["parameters"]["seed"]))
-    def preprocess(self):
-        file = redis_f("Table_for_segmentation", None, p_set=False)
-        #pd.read_json(file.decode("utf-8")).to_csv("data.csv", sep="\t", index= False)
-        pd.read_json(file).to_csv("data.csv", sep="\t", index= False)
-        data = self.spark.read.format("csv").option("header", True).option("sep", "\t").load("data.csv")
-        persent_of_data = (psutil.virtual_memory().total / (1024.0 **3) - 6)* 300000 / data.count()
-        print(persent_of_data)
-        data = data.select([col(x).cast("float") for x in [ i for i in data.columns if "100g" in i]])
-        data = data.na.fill(0.0).na.fill("unk")
-        data = VectorAssembler(inputCols=data.columns, outputCol="prefeatures").setHandleInvalid("error").transform(data)
-        sc = MinMaxScaler().setInputCol("prefeatures").setOutputCol("features")
-        self.data = sc.fit(data).transform(data)
         
-        return persent_of_data
 
     def train(self):
+        file = ws_vitrina("get","Table_for_segmentation")["result"]
+        pd.read_json(file).to_csv("data.csv", sep="\t", index= False)
+        dat = self.spark.read.format("csv").option("header", True).option("sep", "\t").load("data.csv")
+        dat = dat.select([col(i).cast("float") for i in dat.columns])
+        dat = VectorAssembler(inputCols=dat.columns, outputCol="prefeatures").setHandleInvalid("error").transform(dat)
+        sc = MinMaxScaler().setInputCol("prefeatures").setOutputCol("features")
+        dat = sc.fit(dat).transform(dat)
         metric = ClusteringEvaluator()
-        self.model = self.model.fit(self.data)
-        pred = self.model.transform(self.data)
+        self.model = self.model.fit(dat)
+        pred = self.model.transform(dat)
         
         return metric.evaluate(pred)
         
 
 def main():
     global config
+    time.sleep(240)
+    files = os.listdir("/app/showcase/datacsv_6")
     model = model_KMean(config)
     print("_____")
-    print("Size of dataset after preprocessing based on capacity of your device", model.preprocess())
     print("_____")
     rez = model.train()
     print("Result:", rez)
-    print("This result sent on redis server: ", redis_f("rez", rez))
+    print("This result sent on redis server: ", rez, ws_vitrina("send", "rez", rez))
     print("_____")
 
 if __name__ == "__main__":
